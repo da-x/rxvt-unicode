@@ -1845,11 +1845,11 @@ rxvt_term::update_fade_color (unsigned int idx, bool first_time)
   if (rs[Rs_fade])
     {
       if (!first_time)
-        pix_colors_focused [idx].free (this);
+        lookup_color(idx, pix_colors_focused).free (this);
 
       rgba c;
-      pix_colors [Color_fade].get (c);
-      pix_colors_focused [idx].fade (this, atoi (rs[Rs_fade]), pix_colors_unfocused [idx], c);
+      lookup_color(Color_fade, pix_colors).get (c);
+      lookup_color(idx, pix_colors_focused).fade (this, atoi (rs[Rs_fade]), lookup_color(idx, pix_colors_unfocused), c);
     }
 #endif
 }
@@ -3336,7 +3336,7 @@ rxvt_term::process_color_seq (int report, int color, const char *str, char resp)
   if (str[0] == '?' && !str[1])
     {
       rgba c;
-      pix_colors_focused[color].get (c);
+      lookup_color(color, pix_colors_focused).get (c);
 
 #if XFT
       if (c.a != rgba::MAX_CC)
@@ -3484,7 +3484,7 @@ rxvt_term::process_xterm_seq (int op, char *str, char resp)
           bool changed = false;
 
           if (ISSET_PIXCOLOR (Color_tint))
-            changed = root_effects.set_tint (pix_colors_focused [Color_tint]);
+            changed = root_effects.set_tint (lookup_color(Color_tint, pix_colors_focused));
 
           if (changed)
             update_background ();
@@ -3878,7 +3878,7 @@ rxvt_term::process_sgr_mode (unsigned int nargs, const int *arg)
 {
   unsigned int i;
   short rendset;
-  int rendstyle;
+  rend_t rendstyle;
 
   if (nargs == 0)
     {
@@ -3971,6 +3971,14 @@ rxvt_term::process_sgr_mode (unsigned int nargs, const int *arg)
                 scr_color ((unsigned int) (minCOLOR + arg[i + 2]), Color_fg);
                 i += 2;
               }
+#if USE_24_BIT_COLOR
+            else if (nargs > i + 4 && arg[i + 1] == 2)
+              {
+                unsigned int r = arg[i + 2], g = arg[i + 3], b = arg[i + 4];
+                scr_color_rgb (r, g, b, Color_fg);
+                i += 4;
+              }
+#endif
             break;
           case 39:		/* default fg */
             scr_color (Color_fg, Color_fg);
@@ -3992,6 +4000,14 @@ rxvt_term::process_sgr_mode (unsigned int nargs, const int *arg)
                 scr_color ((unsigned int) (minCOLOR + arg[i + 2]), Color_bg);
                 i += 2;
               }
+#if USE_24_BIT_COLOR
+            else if (nargs > i + 4 && arg[i + 1] == 2)
+              {
+                unsigned int r = arg[i + 2], g = arg[i + 3], b = arg[i + 4];
+                scr_color_rgb (r, g, b, Color_bg);
+                i += 4;
+              }
+#endif
             break;
           case 49:		/* default bg */
             scr_color (Color_bg, Color_bg);
