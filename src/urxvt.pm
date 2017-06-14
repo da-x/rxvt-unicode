@@ -606,8 +606,6 @@ sub parse_resource {
 
          push @{ $term->{perl_ext_3} }, $v->[0];
 
-         return 1 unless $isarg;
-
          if ($v->[1] eq "boolean") {
             $term->put_option_db ($name, $flag ? "true" : "false");
             return 1;

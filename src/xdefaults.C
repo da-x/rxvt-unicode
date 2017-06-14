@@ -635,7 +635,7 @@ rxvt_define_key (rxvt_term *term, const char *k, const char *v)
  *   value will be a string
  */
 static int
-rxvt_enumerate_helper (
+rxvt_keysym_enumerate_helper (
    XrmDatabase *database ecb_unused,
    XrmBindingList bindings ecb_unused,
    XrmQuarkList quarks,
@@ -850,7 +850,7 @@ rxvt_term::extract_resources ()
 }
 
 void
-rxvt_term::enumerate_resources (void (*cb)(rxvt_term *, const char *, const char *), const char *name_p, const char *class_p)
+rxvt_term::enumerate_keysym_resources (void (*cb)(rxvt_term *, const char *, const char *))
 {
   /*
    * [R5 or later]: enumerate the resource database
@@ -865,25 +865,25 @@ rxvt_term::enumerate_resources (void (*cb)(rxvt_term *, const char *, const char
   XrmName name_prefix[3];
   XrmClass class_prefix[3];
 
-  name_prefix[1] = name_p ? XrmStringToName (name_p) : NULLQUARK;
+  name_prefix[1] = XrmStringToName ("keysym");
   name_prefix[2] = NULLQUARK;
-  class_prefix[1] = class_p ? XrmStringToName (class_p) : NULLQUARK;
+  class_prefix[1] = XrmStringToName ("Keysym");
   class_prefix[2] = NULLQUARK;
 
 # ifdef RESFALLBACK
   name_prefix[0] = class_prefix[0] = XrmStringToName (RESFALLBACK);
   /* XXX: Need to check sizeof (rxvt_t) == sizeof (XPointer) */
   XrmEnumerateDatabase (database, name_prefix, class_prefix,
-                        XrmEnumOneLevel, rxvt_enumerate_helper, (XPointer)closure);
+                        XrmEnumOneLevel, rxvt_keysym_enumerate_helper, (XPointer)closure);
 # endif
 
   name_prefix[0] = class_prefix[0] = XrmStringToName (RESCLASS);
   XrmEnumerateDatabase (database, name_prefix, class_prefix,
-                        XrmEnumOneLevel, rxvt_enumerate_helper, (XPointer)closure);
+                        XrmEnumOneLevel, rxvt_keysym_enumerate_helper, (XPointer)closure);
 
   name_prefix[0] = class_prefix[0] = XrmStringToName (rs[Rs_name]);
   XrmEnumerateDatabase (database, name_prefix, class_prefix,
-                        XrmEnumOneLevel, rxvt_enumerate_helper, (XPointer)closure);
+                        XrmEnumOneLevel, rxvt_keysym_enumerate_helper, (XPointer)closure);
 #endif
 }
 
