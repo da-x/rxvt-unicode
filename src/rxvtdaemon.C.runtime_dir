@@ -43,13 +43,9 @@ char *rxvt_connection::unix_sockname ()
       struct utsname u;
       uname (&u);
 
-      path = getenv ("XDG_RUNTIME_DIR");
+      path = getenv ("HOME");
       if (!path)
-        {
-          path = getenv ("HOME");
-          if (!path)
-            path = "/tmp";
-        }
+        path = "/tmp";
 
       snprintf (name, PATH_MAX, "%s/.urxvt", path);
       mkdir (name, 0777);
